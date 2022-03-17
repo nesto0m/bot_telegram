@@ -13,19 +13,13 @@ init()
 
 import logging
 
-from telegram import Update
-from telegram.ext import CommandHandler
-from telegram.ext import Updater
-#from telegram.ext import CallbackContext
-from telegram.ext import Filters
-from telegram.ext import MessageHandler
-from telegram.ext import ConversationHandler
-from telegram import ForceReply
-from telegram import ChatAction
 import telegram
-from telegram.utils.request import Request
-import logging
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update, ForceReply, ChatAction
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 
+#from telegram import Update, ForceReply, ChatAction
+#from telegram import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
+#from telegram import Filters
 
 # Enable logging
 logging.basicConfig(
@@ -39,12 +33,18 @@ nombre = []
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
-def start(update, context):
+def start(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /start is issued."""
+    user = update.effective_user
+    update.message.reply_markdown_v2(
+        fr'Hi {user.mention_markdown_v2()}\!',
+        reply_markup=ForceReply(selective=True),
+    )
     update.message.reply_text('Bienvenido!\n\nEnvíame /buscar para buscar el dni de una persona a partir de los nombres')
 
 
 
-def help_command(update, context) -> None:
+def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
 
@@ -174,7 +174,7 @@ def consulta_por_nombres(update, context):
             update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
             return ConversationHandler.END
 
-def echo(update, context) -> None:
+def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
     update.message.reply_text(update.message.text)
 
