@@ -14,8 +14,8 @@ init()
 import logging
 
 from telegram import Update, ForceReply, ChatAction
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
-from telegram.ext import Filters
+from telegram import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
+from telegram import Filters
 
 # Enable logging
 logging.basicConfig(
@@ -178,7 +178,7 @@ def echo(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater("YOUR_TOKEN")
+    updater = Updater("5169103798:AAF2AZtUq9LOncmgU3FfY2XyHlbHfkQRGcg")
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
