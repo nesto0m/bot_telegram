@@ -21,7 +21,7 @@ from telegram.ext import Filters
 from telegram.ext import MessageHandler
 from telegram.ext import ConversationHandler
 from telegram import ForceReply
-from telegram.ext import ChatAction
+from telegram import ChatAction
 
 
 
