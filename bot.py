@@ -17,10 +17,10 @@ from telegram import Update
 from telegram.ext import Filters
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler
-from telegram import CallbackContext
-from telegram import ConversationHandler
-from telegram import ForceReply
-from telegram import ChatAction
+from telegram.ext import CallbackContext
+from telegram.ext import ConversationHandler
+from telegram.ext import ForceReply
+from telegram.ext import ChatAction
 
 
 # Enable logging
