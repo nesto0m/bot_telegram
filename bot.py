@@ -20,7 +20,7 @@ from telegram.ext import Updater
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
 from telegram.ext import ConversationHandler
-from telegram.ext import ForceReply
+from telegram import ForceReply
 from telegram.ext import ChatAction
 
 
