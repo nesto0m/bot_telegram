@@ -14,7 +14,7 @@ init()
 import logging
 
 from telegram import Update
-from telegram import CommandHandler
+from telegram.ext import CommandHandler
 from telegram.ext import Updater
 #from telegram.ext import CallbackContext
 from telegram.ext import Filters
@@ -37,7 +37,7 @@ nombre = []
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
-def start(update: Update, context: CallbackContext) -> None:
+def start(update, context) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     update.message.reply_markdown_v2(
@@ -48,7 +48,7 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
+def help_command(update, context) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
 
