@@ -14,7 +14,8 @@ init()
 import logging
 
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram import CommandHandler
+from telegram.ext import Updater, CallbackContext
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
 from telegram.ext import ConversationHandler
