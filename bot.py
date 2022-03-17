@@ -13,9 +13,15 @@ init()
 
 import logging
 
-from telegram import Update, ForceReply, ChatAction
-from telegram import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
+from telegram import Update
 from telegram import Filters
+from telegram import CommandHandler
+from telegram import MessageHandler
+from telegram import CallbackContext
+from telegram import ConversationHandler
+from telegram import ForceReply
+from telegram import ChatAction
+
 
 # Enable logging
 logging.basicConfig(
