@@ -178,7 +178,7 @@ def consulta_por_nombres(update, context):
             update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
             return ConversationHandler.END
 
-def echo(update: Update, context: CallbackContext) -> None:
+def echo(update, context) -> None:
     """Echo the user message."""
     update.message.reply_text(update.message.text)
 
