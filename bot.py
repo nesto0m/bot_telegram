@@ -37,13 +37,7 @@ nombre = []
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
-def start(update, context) -> None:
-    """Send a message when the command /start is issued."""
-    user = update.effective_user
-    update.message.reply_markdown_v2(
-        fr'Hi {user.mention_markdown_v2()}\!',
-        reply_markup=ForceReply(selective=True),
-    )
+def start(update, context):
     update.message.reply_text('Bienvenido!\n\nEnvíame /buscar para buscar el dni de una persona a partir de los nombres')
 
 
