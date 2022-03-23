@@ -31,7 +31,6 @@ now = datetime.now()
 horas = now.time()
 horas = str(horas)
 horass = replaced_text = horas.replace(':', '')
-nombre_file_txt=(str(horass)+' numeros.txt')
 nombre_file_vcf=(str(horass)+' numeros.vcf')
 limite=100000
 filename=0
@@ -107,7 +106,7 @@ def generador(update, context):
             
             os.unlink(filename)
             
-            filename= 'todos.vcf'
+            filename= nombre_file_vcf
             send_txt(filename, chat)
             
             os.unlink(filename)
