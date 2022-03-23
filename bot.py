@@ -40,8 +40,9 @@ import logging
 import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update, ForceReply, ChatAction
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, 
 
+#CallbackContext
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
