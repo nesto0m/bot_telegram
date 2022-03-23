@@ -37,6 +37,8 @@ filename=0
 
 import logging
 
+import telegram
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update, ForceReply, ChatAction
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
