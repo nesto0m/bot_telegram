@@ -1,25 +1,45 @@
-from argparse import Action
+#!/usr/bin/env python
+# pylint: disable=C0116,W0613
+# This program is dedicated to the public domain under the CC0 license.
+
+"""
+Simple Bot to reply to Telegram messages.
+
+First, a few handler functions are defined. Then, those functions are passed to
+the Dispatcher and registered at their respective places.
+Then, the bot is started and runs until we press Ctrl-C on the command line.
+
+Usage:
+Basic Echobot example, repeats messages.
+Press Ctrl-C on the command line or send a signal to the process to stop the
+bot.
+"""
+from fileinput import filename
+from telegram import ChatAction
 import os
 from socket import timeout
-import time
-import requests
-from bs4 import BeautifulSoup
-from requests.structures import CaseInsensitiveDict
-from colorama import Fore, init
-from urllib3.exceptions import InsecureRequestWarning
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-init()
+from datetime import datetime
+import random
+from time import sleep
+from tqdm import tqdm
+
+lista_num=[]
+numeros=[]
+abre=('BEGIN:VCARD')
+cierra=('END:VCARD')
+now = datetime.now()
+horas = now.time()
+horas = str(horas)
+horass = replaced_text = horas.replace(':', '')
+nombre_file_txt=(str(horass)+' numeros.txt')
+nombre_file_vcf=(str(horass)+' numeros.vcf')
+limite=100000
+filename=0
 
 import logging
 
-import telegram
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update, ForceReply, ChatAction
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
-
-#from telegram import Update, ForceReply, ChatAction
-#from telegram import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
-#from telegram import Filters
+from telegram import Update, ForceReply
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # Enable logging
 logging.basicConfig(
@@ -28,11 +48,81 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-INPUT_NAME =0
-nombre = []
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
+
+def porcentaje(Porcentaje, update, context):
+    chat = update.message.chat
+    chat.send_action(
+        
+        action=ChatAction.TYPING,
+        timeout=None
+    )
+    print(Porcentaje, "%" )
+    
+    
+def send_txt(filename, chat):
+    
+    chat.send_document(
+                
+                document= open (filename,'rb')
+            )
+
+
+def generador(update, context):
+        
+    i = 1
+    while i <= limite:
+      
+        num= random.randint(900000000, 999999999)
+        medio=("TEL;CELL:"+str(num))
+        lista_num=(abre,medio,cierra)
+        numeros=(str(num))
+        with open(nombre_file_vcf, 'a') as temp_file:
+         for item in lista_num:
+            temp_file.write("%s\n" % item)
+        f = open ('todos.txt','a')
+        f.write(str(numeros + '\n'))
+        f.close()
+        i = i + 1
+        Porcentaje= i/1000
+        if Porcentaje == 5 or Porcentaje ==10 or Porcentaje == 15 or Porcentaje == 20 or Porcentaje == 25 or Porcentaje == 30 or Porcentaje ==35 or Porcentaje == 40 or Porcentaje ==45 or Porcentaje == 50 or Porcentaje == 55 or Porcentaje == 60 or Porcentaje ==65 or Porcentaje == 70 or Porcentaje ==75 or Porcentaje == 80 or Porcentaje == 85 or Porcentaje ==90 or Porcentaje == 95:
+           
+           porcentaje(Porcentaje, update, context)
+           
+        elif Porcentaje == 100:
+           
+            print ('Terminado')
+            
+            chat = update.message.chat
+            chat.send_action(
+        
+            action=ChatAction.UPLOAD_DOCUMENT,
+            timeout=None
+        )
+        
+            filename= 'todos.txt'
+            send_txt(filename, chat)
+            
+            os.unlink(filename)
+            
+            filename= 'todos.vcf'
+            send_txt(filename, chat)
+            
+            os.unlink(filename)
+            
+
+        
+            
+        else:
+         
+            Porcentaje= i/1000 
+         
+    
+
+
+
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -40,139 +130,12 @@ def start(update: Update, context: CallbackContext) -> None:
         fr'Hi {user.mention_markdown_v2()}\!',
         reply_markup=ForceReply(selective=True),
     )
-    update.message.reply_text('Bienvenido!\n\nEnvíame /buscar para buscar el dni de una persona a partir de los nombres')
-
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
 
-def buscar_dni(update, context):
-    
-    update.message.reply_text('Envíame el nombre completo')
-    return INPUT_NAME
-    
-    
-
-def consulta_por_nombres(update, context):
-    chat = update.message.chat
-    chat.send_action(
-        
-        action=ChatAction.TYPING,
-        timeout=None
-    )
-    nombre = [update.message.text]
-    nombrenew = (update.message.text.replace(' ', ','))
-    largo_nom = (nombrenew.count(','))
-    largo_nombre = len(nombrenew)
-    indice_c = nombrenew.index(',')
-    
-    if largo_nom == 1: 
-    
-        nombre1 = nombrenew[0:indice_c]
-        apellido1 = nombrenew[indice_c + 1:largo_nombre]
-        nombre = nombre1
-        name = (nombre)
-        apellidop = apellido1
-        apellidom = ' '
-        url = "https://buscardni.xyz/buscador/ejemplo_ajax_proceso.php"
-        headers = CaseInsensitiveDict()
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        data = f"APE_PAT={apellidop}&APE_MAT={apellidom}&NOMBRES={name}"
-        try:
-            resp = requests.post(url, headers=headers, data=data)
-            text = resp.text
-            soup = BeautifulSoup(text, "lxml")
-            text2 = soup.get_text()
-            new_b = text2[131:]
-            characters = "ver"
-            string = ''.join( x for x in new_b if x not in characters)
-            print(string)
-            import time
-            time.sleep(1)
-            string_new = (string.replace('Nombs\n DNI\nFN', ''))
-            print(string_new)
-            update.message.reply_text(string_new)
-            update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
-            return ConversationHandler.END
-        except: 
-            update.message.reply_text('no se encuentra')
-            update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
-            return ConversationHandler.END
-        
-    elif largo_nom == 2:
-    
-        nombre1 = nombrenew[0:indice_c]
-        todonombre = nombrenew[indice_c + 1:largo_nombre]
-        indice_c = todonombre.index(',')
-        apellido1 = todonombre[0:indice_c]
-        apellido2 = todonombre[indice_c + 1:largo_nombre]
-        nombre = nombre1        
-        name = (nombre)
-        apellidop = apellido1
-        apellidom = apellido2
-        url = "https://buscardni.xyz/buscador/ejemplo_ajax_proceso.php"
-        headers = CaseInsensitiveDict()
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        data = f"APE_PAT={apellidop}&APE_MAT={apellidom}&NOMBRES={name}"
-        try: 
-            resp = requests.post(url, headers=headers, data=data)
-            text = resp.text
-            soup = BeautifulSoup(text, "lxml")
-            text2 = soup.get_text()
-            new_b = text2[131:]
-            characters = "ver"
-            string = ''.join( x for x in new_b if x not in characters)
-            print(string)
-            import time
-            time.sleep(1)
-            string_new = (string.replace('Nombs\n DNI\nFN', ''))
-            update.message.reply_text(string_new)
-            update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
-            return ConversationHandler.END
-        except: 
-            update.message.reply_text('no se encuentra')
-            update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
-            return ConversationHandler.END
-        
-    
-    else:
-        nombre1 = nombrenew[0:indice_c]
-        todonombre = nombrenew[indice_c + 1:largo_nombre]
-        indice_c = todonombre.index(',')
-        nombre2 = todonombre[0:indice_c]
-        todonombre2 = todonombre[indice_c + 1:largo_nombre]
-        indice_c = todonombre2.index(',')
-        apellido1 = todonombre2[0:indice_c]
-        apellido2 = todonombre2[indice_c + 1:largo_nombre]
-        nombre = (str(nombre1+' '+nombre2))
-        name = (nombre)
-        apellidop = apellido1
-        apellidom = apellido2
-        url = "https://buscardni.xyz/buscador/ejemplo_ajax_proceso.php"
-        headers = CaseInsensitiveDict()
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        data = f"APE_PAT={apellidop}&APE_MAT={apellidom}&NOMBRES={name}"
-        try:
-            resp = requests.post(url, headers=headers, data=data)
-            text = resp.text
-            soup = BeautifulSoup(text, "lxml")
-            text2 = soup.get_text()
-            new_b = text2[131:]
-            characters = "ver"
-            string = ''.join( x for x in new_b if x not in characters)
-            print(string)
-            import time
-            time.sleep(5)
-            string_new = (string.replace('Nombs\n DNI\nFN', ''))
-            update.message.reply_text(string_new)
-            update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
-            return ConversationHandler.END
-        except: 
-            update.message.reply_text('no se encuentra')
-            update.message.reply_text('Envíame /buscar para buscar el dni de una persona a partir de los nombres')
-            return ConversationHandler.END
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
@@ -192,24 +155,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
-    #dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
-    
-    dispatcher.add_handler(ConversationHandler(
-        entry_points=[
-            CommandHandler('buscar', buscar_dni)
-        ],
-        
-        states={
-            
-            INPUT_NAME:[MessageHandler(Filters.text, consulta_por_nombres)],
-          
-        },
-        
-        fallbacks=[]
-    
-    ))
-    
-    
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, generador))
+
     # Start the Bot
     updater.start_polling()
 
